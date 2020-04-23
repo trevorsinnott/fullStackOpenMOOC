@@ -22,6 +22,27 @@ const App = () => {
   const handleNeutralClicks = () => setNeutral(neutral + 1);
   const handleBadClicks = () => setBad(bad + 1);
 
+  const all = () => {
+    const total = good + neutral + bad;
+    return total;
+  };
+
+  const average = () => {
+    const average = (good - bad) / all();
+    if (isNaN(average)) {
+      return 0;
+    }
+    return average;
+  };
+
+  const positive = () => {
+    const value = (good / (good + bad + neutral)) * 100;
+    if (isNaN(value)) {
+      return 0;
+    }
+    return value + " %";
+  };
+
   return (
     <div>
       <SectionTitle text="give feedback" />
@@ -32,6 +53,9 @@ const App = () => {
       <Counter text="good" count={good} />
       <Counter text="neutral" count={neutral} />
       <Counter text="bad" count={bad} />
+      <Counter text="all" count={all()} />
+      <Counter text="average" count={average()} />
+      <Counter text="positive" count={positive()} />
     </div>
   );
 };
