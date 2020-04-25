@@ -7,24 +7,24 @@ const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>{text}</button>
 );
 
-const Statistics = ({ text, count }) => (
+const Statistic = ({ text, value }) => (
   <p>
-    {text} {count}
+    {text} {value}
   </p>
 );
 
-const StatsContainer = ({ count, text }) => {
-  if (count.all === 0) {
+const Statistics = ({ value, text }) => {
+  if (value.all === 0) {
     return <p>No feedback given</p>;
   }
   return (
     <div>
-      <Statistics text={text.good} count={count.good} />
-      <Statistics text={text.neutral} count={count.neutral} />
-      <Statistics text={text.bad} count={count.bad} />
-      <Statistics text={text.all} count={count.all} />
-      <Statistics text={text.average} count={count.average} />
-      <Statistics text={text.positive} count={count.positive} />
+      <Statistic text={text.good} value={value.good} />
+      <Statistic text={text.neutral} value={value.neutral} />
+      <Statistic text={text.bad} value={value.bad} />
+      <Statistic text={text.all} value={value.all} />
+      <Statistic text={text.average} value={value.average} />
+      <Statistic text={text.positive} value={value.positive} />
     </div>
   );
 };
@@ -59,7 +59,7 @@ const App = () => {
     return value + " %";
   };
 
-  const count = {
+  const value = {
     good: good,
     neutral: neutral,
     bad: bad,
@@ -84,7 +84,7 @@ const App = () => {
       <Button handleClick={handleNeutralClicks} text="neutral" />
       <Button handleClick={handleBadClicks} text="bad" />
       <SectionTitle text="statistics" />
-      <StatsContainer count={count} text={text} />
+      <Statistics value={value} text={text} />
     </div>
   );
 };
