@@ -13,6 +13,22 @@ const Statistics = ({ text, count }) => (
   </p>
 );
 
+const StatsContainer = ({ count, text }) => {
+  if (count.all === 0) {
+    return <p>No feedback given</p>;
+  }
+  return (
+    <div>
+      <Statistics text={text.good} count={count.good} />
+      <Statistics text={text.neutral} count={count.neutral} />
+      <Statistics text={text.bad} count={count.bad} />
+      <Statistics text={text.all} count={count.all} />
+      <Statistics text={text.average} count={count.average} />
+      <Statistics text={text.positive} count={count.positive} />
+    </div>
+  );
+};
+
 const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
@@ -43,6 +59,24 @@ const App = () => {
     return value + " %";
   };
 
+  const count = {
+    good: good,
+    neutral: neutral,
+    bad: bad,
+    all: all(),
+    average: average(),
+    positive: positive(),
+  };
+
+  const text = {
+    good: "good",
+    bad: "bad",
+    neutral: "neutral",
+    all: "all",
+    average: "average",
+    positive: "positive",
+  };
+
   return (
     <div>
       <SectionTitle text="give feedback" />
@@ -50,12 +84,7 @@ const App = () => {
       <Button handleClick={handleNeutralClicks} text="neutral" />
       <Button handleClick={handleBadClicks} text="bad" />
       <SectionTitle text="statistics" />
-      <Statistics text="good" count={good} />
-      <Statistics text="neutral" count={neutral} />
-      <Statistics text="bad" count={bad} />
-      <Statistics text="all" count={all()} />
-      <Statistics text="average" count={average()} />
-      <Statistics text="positive" count={positive()} />
+      <StatsContainer count={count} text={text} />
     </div>
   );
 };
