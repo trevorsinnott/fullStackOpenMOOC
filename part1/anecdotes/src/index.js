@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
-const Button = ({ handleClick, max, selected }) => (
-  <button onClick={() => handleClick(max, selected)}>next anecdote</button>
+const Button = ({ handleClick, text }) => (
+  <button onClick={handleClick}>{text}</button>
 );
 
 const App = (props) => {
+  const max = props.anecdotes.length - 1;
   const [selected, setSelected] = useState(0);
+  const [score, setScore] = useState(new Array(max).fill(0));
 
-  const handleClick = (max, selected) => {
+  const handleNext = (max, selected) => {
     let newIndex = selected;
 
     while (newIndex === selected) {
@@ -18,12 +20,21 @@ const App = (props) => {
     setSelected(newIndex);
   };
 
-  const max = props.anecdotes.length - 1;
+  const handleVote = (index) => {
+    const newScore = [...score];
+    newScore[index] += 1;
+    setScore(newScore);
+  };
 
   return (
     <div>
-      <p>{props.anecdotes[selected]}</p>
-      <Button handleClick={handleClick} max={max} selected={selected} />
+      <div>{props.anecdotes[selected]}</div>
+      <div>has {score[selected]} votes</div>
+      <Button handleClick={() => handleVote(selected)} text="vote" />
+      <Button
+        handleClick={() => handleNext(max, selected)}
+        text="next anecdote"
+      />
     </div>
   );
 };
