@@ -1,45 +1,60 @@
 import React, { useState } from "react";
+import Header from "./Header";
+import Input from "./Input";
 
 const App = () => {
-  const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
-  const [newName, setNewName] = useState("");
+  const [persons, setPersons] = useState([
+    { name: "Arto Hellas", number: "040-1234567" },
+  ]);
+  const [newPerson, setNewPerson] = useState({
+    name: "",
+    number: "",
+  });
 
   const addPerson = (event) => {
     event.preventDefault();
     if (
       persons.some(
-        (person) => person.name.toLowerCase() === newName.toLowerCase()
+        (person) => person.name.toLowerCase() === newPerson.name.toLowerCase()
       )
     ) {
-      window.alert(`${newName} is already added to phonebook`);
-      setNewName("");
+      window.alert(`${newPerson.name} is already added to phonebook`);
+      setNewPerson({ name: "", number: "" });
     } else {
-      const newPerson = {
-        name: newName,
-      };
       setPersons(persons.concat(newPerson));
-      setNewName("");
+      setNewPerson({ name: "", number: "" });
     }
   };
 
-  const handleNameChange = (event) => {
-    setNewName(event.target.value);
+  const handlePersonChange = (event) => {
+    const person = { ...newPerson };
+    person[event.target.id] = event.target.value;
+    setNewPerson(person);
   };
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <Header text="Phonebook" />
       <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange} />
-        </div>
+        <Input
+          text="name"
+          value={newPerson.name}
+          handleChange={handlePersonChange}
+        />
+        <Input
+          text="number"
+          value={newPerson.number}
+          handleChange={handlePersonChange}
+        />
         <div>
           <button type="submit">add</button>
         </div>
       </form>
-      <h2>Numbers</h2>
+      <Header text="Numbers" />
       {persons.map((person) => (
-        <p key={person.name}>{person.name}</p>
+        <p key={person.name}>
+          {person.name} {person.number}
+        </p>
       ))}
     </div>
   );
