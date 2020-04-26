@@ -2,11 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Course from "./components/Course";
 
-// const Total = ({ parts }) => {
-//   const sum = parts[0].exercises + parts[1].exercises + parts[2].exercises;
-//   return <p>Number of exercises {sum}</p>;
-// };
-
 const App = () => {
   const course = {
     id: 1,
