@@ -7,6 +7,7 @@ const App = () => {
   const [filterBy, setFilterBy] = useState({
     none: true,
     value: "",
+    results: [],
   });
 
   useEffect(() => {
@@ -17,31 +18,39 @@ const App = () => {
 
   const handleFilterChange = (event) => {
     const newFilter = { ...filterBy };
+    newFilter.results = [];
     if (event.target.value === "") {
       newFilter.none = true;
     } else {
       newFilter.none = false;
+      newFilter.results = countries.filter((country) =>
+        country.name.toLowerCase().includes(event.target.value.toLowerCase())
+      );
     }
     newFilter.value = event.target.value;
     setFilterBy(newFilter);
   };
 
-  const countriesToShow = filterBy.none
-    ? []
-    : countries.filter((country) =>
-        country.name.toLowerCase().includes(filterBy.value.toLowerCase())
-      );
+  const handleCountryButton = (country) => {
+    const newFilter = { ...filterBy, results: [country] };
+    setFilterBy(newFilter);
+  };
 
   const results = filterBy.none ? (
     <div></div>
-  ) : countriesToShow.length > 10 ? (
+  ) : filterBy.results.length > 10 ? (
     <div>Too many matches, specify another filter</div>
-  ) : countriesToShow.length > 1 ? (
-    countriesToShow.map((country) => {
-      return <div key={country.name}>{country.name}</div>;
+  ) : filterBy.results.length > 1 ? (
+    filterBy.results.map((country) => {
+      return (
+        <div key={country.name}>
+          {country.name}{" "}
+          <button onClick={() => handleCountryButton(country)}>show</button>
+        </div>
+      );
     })
   ) : (
-    countriesToShow.map((country) => {
+    filterBy.results.map((country) => {
       return <Country key={country.name} country={country} />;
     })
   );
