@@ -5,10 +5,10 @@ import Country from "./Country";
 const App = () => {
   const [countries, setCountries] = useState([]);
   const [filterBy, setFilterBy] = useState({
-    none: true,
     value: "",
     results: [],
   });
+  const [weather, setWeather] = useState({ empty: true });
 
   useEffect(() => {
     axios.get("https://restcountries.eu/rest/v2/all").then((response) => {
@@ -16,13 +16,22 @@ const App = () => {
     });
   }, []);
 
+  useEffect(() => {
+    if (filterBy.results.length === 1) {
+      const country = filterBy.results[0];
+      const targetUrl =
+        "http://api.weatherstack.com/current?access_key=" +
+        process.env.REACT_APP_WEATHER_KEY +
+        "&query=" +
+        country.capital;
+      axios.get(targetUrl).then((response) => setWeather(response.data));
+    }
+  }, [filterBy]);
+
   const handleFilterChange = (event) => {
     const newFilter = { ...filterBy };
     newFilter.results = [];
-    if (event.target.value === "") {
-      newFilter.none = true;
-    } else {
-      newFilter.none = false;
+    if (event.target.value !== "") {
       newFilter.results = countries.filter((country) =>
         country.name.toLowerCase().includes(event.target.value.toLowerCase())
       );
@@ -36,24 +45,27 @@ const App = () => {
     setFilterBy(newFilter);
   };
 
-  const results = filterBy.none ? (
-    <div></div>
-  ) : filterBy.results.length > 10 ? (
-    <div>Too many matches, specify another filter</div>
-  ) : filterBy.results.length > 1 ? (
-    filterBy.results.map((country) => {
-      return (
-        <div key={country.name}>
-          {country.name}{" "}
-          <button onClick={() => handleCountryButton(country)}>show</button>
-        </div>
-      );
-    })
-  ) : (
-    filterBy.results.map((country) => {
-      return <Country key={country.name} country={country} />;
-    })
-  );
+  const results =
+    filterBy.results.length === 0 ? (
+      <div></div>
+    ) : filterBy.results.length > 10 ? (
+      <div>Too many matches, specify another filter</div>
+    ) : filterBy.results.length > 1 ? (
+      filterBy.results.map((country) => {
+        return (
+          <div key={country.name}>
+            {country.name}{" "}
+            <button onClick={() => handleCountryButton(country)}>show</button>
+          </div>
+        );
+      })
+    ) : (
+      <Country
+        key={filterBy.results[0].name}
+        country={filterBy.results[0]}
+        weatherReport={weather}
+      />
+    );
 
   return (
     <div>
