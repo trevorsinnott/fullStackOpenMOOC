@@ -12,7 +12,10 @@ const App = () => {
     number: "",
   });
   const [filterBy, setFilterBy] = useState({ showAll: true, searchValue: "" });
-  const [changeMessage, setChangeMessage] = useState("");
+  const [changeMessage, setChangeMessage] = useState({
+    error: false,
+    text: "",
+  });
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -45,9 +48,21 @@ const App = () => {
               )
             );
             setNewPerson({ name: "", number: "" });
-            setChangeMessage(`Updated ${returnedPerson.name}'s number`);
+            setChangeMessage({
+              ...changeMessage,
+              text: `Updated ${returnedPerson.name}'s number`,
+            });
             setTimeout(() => {
-              setChangeMessage("");
+              setChangeMessage({ ...changeMessage, text: "" });
+            }, 5000);
+          })
+          .catch((returnedPerson) => {
+            setChangeMessage({
+              error: true,
+              text: `Information for ${updatedPerson.name} has already been removed from server`,
+            });
+            setTimeout(() => {
+              setChangeMessage({ error: false, text: "" });
             }, 5000);
           });
       }
@@ -55,9 +70,12 @@ const App = () => {
       personService.create(newPerson).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
         setNewPerson({ name: "", number: "" });
-        setChangeMessage(`Added ${returnedPerson.name}`);
+        setChangeMessage({
+          ...changeMessage,
+          text: `Added ${returnedPerson.name}`,
+        });
         setTimeout(() => {
-          setChangeMessage("");
+          setChangeMessage({ ...changeMessage, text: "" });
         }, 5000);
       });
     }
@@ -89,9 +107,16 @@ const App = () => {
   const deletePerson = (id) => {
     const person = persons.find((person) => person.id === id);
     if (window.confirm(`Delete ${person.name}?`)) {
-      personService
-        .remove(id)
-        .then(() => setPersons(persons.filter((person) => person.id !== id)));
+      personService.remove(id).then(() => {
+        setPersons(persons.filter((person) => person.id !== id));
+        setChangeMessage({
+          ...setChangeMessage,
+          text: `Deleted ${persons.find((person) => person.id === id).name}`,
+        });
+        setTimeout(() => {
+          setChangeMessage({ ...changeMessage, text: "" });
+        }, 5000);
+      });
     }
   };
 
