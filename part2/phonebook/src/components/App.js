@@ -58,6 +58,15 @@ const App = () => {
     setFilterBy(newFilter);
   };
 
+  const deletePerson = (id) => {
+    const person = persons.find((person) => person.id === id);
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService
+        .remove(id)
+        .then(() => setPersons(persons.filter((person) => person.id !== id)));
+    }
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -69,7 +78,7 @@ const App = () => {
         submit={addPerson}
       />
       <h3>Numbers</h3>
-      <Persons peopleToShow={peopleToShow} />
+      <Persons peopleToShow={peopleToShow} deletePerson={deletePerson} />
     </div>
   );
 };

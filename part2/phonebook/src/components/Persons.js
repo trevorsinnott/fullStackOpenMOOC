@@ -1,6 +1,6 @@
 import React from "react";
 
-const Persons = ({ peopleToShow }) => {
+const Persons = ({ peopleToShow, deletePerson }) => {
   return (
     <table>
       <tbody>
@@ -8,6 +8,9 @@ const Persons = ({ peopleToShow }) => {
           <tr key={person.name}>
             <td>{person.name}</td>
             <td>{person.number}</td>
+            <td>
+              <button onClick={() => deletePerson(person.id)}>delete</button>
+            </td>
           </tr>
         ))}
       </tbody>
